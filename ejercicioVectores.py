@@ -1,12 +1,12 @@
 #Crear un programa que pida "x" cantidad de numeros
 #y separar los numeros pares en un vector y los nones en otro, y al final mostrar ambos vectoes
-
+cantidad = int(input("Ingreese el numero de numeros que quiere clasificar: "))
 pares = []
 nones = []
 suma = []
-size = 4
 
-for i in range(size):
+
+for i in range(cantidad):
     print("Ingresa un numero ", i + 1)
     numero = int(input("Numero: "))
     clasificador = numero % 2
