@@ -8,7 +8,7 @@ nombres = []
 while True:
     nombre = str(input("Ingresa un nombre: "))
     if nombre == "STOP":
-        False
+        break
     else:
         nombres.append(nombre)
 
