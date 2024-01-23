@@ -8,20 +8,17 @@ class Tareas:
         self.fecha_fin = fecha_fin
         Tareas.tareas.append(self)
 
-    def pedir_tareas(cls):
-        nombre = input("Ingrese el nombre de la tarea a realizar: ")
-        fecha_in = input("Ingresa la ficha incial en formato dd/mm/aaaa: ")
-        fecha_fin = input("Ingresa la fecha limite de entrega en formato dd/mm/aaaa: ")
-
-        n_tarea = cls(nombre, fecha_in, fecha_fin)
-
-    def mostrar_tareas(cls):
+    def mostrar_tareas():
         for i in Tareas.tareas:
             print(f"Las tareas pendientes son: {i.nombre}, fecha inicial: {i.fecha_in}, fecha limite: {i.fecha_fin}")
 
+n_tareas = int(input("Ingrese el numero de tareas que se agregaran: "))
 
-a_tareas = Tareas()
+for i in range(n_tareas):
+    nombre = input("nombre de la tarea: ")
+    fecha_in = input("ingresa la fecha incial de la tarea en formato dd/mm/aaaa: ")
+    fecha_fin = input("ingresa la fecha limite de entrega de la tarea en formato dd/mm/aaaa: ")
 
-a_tareas.pedir_tareas()
+    tarea = Tareas(nombre, fecha_in, fecha_fin)
 
-a_tareas.mostrar_tareas()
+Tareas.mostrar_tareas()
