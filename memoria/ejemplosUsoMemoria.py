@@ -36,5 +36,12 @@ class Persona:
         self.edad = edad
 
 persona1 = Persona("Irving", 25)
+persona2 = Persona("Pedro", 22)
+persona3 = Persona("WIllmar", 19)
 
-print(persona1)
+print(persona1.nombre)
+print(persona2.nombre)
+print(persona3.nombre)
+
+
+
