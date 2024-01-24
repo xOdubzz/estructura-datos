@@ -24,8 +24,6 @@ class Alumno:
 
         fechacurp = fecha_nacimiento.split("/")
         fechacurp = "".join(fechacurp)
-        #print(fechacurp)
-
         inPa = str(apellido_paterno[0])
         inMa = str(apellido_materno[0])
         inNo = str(nombre[0])
