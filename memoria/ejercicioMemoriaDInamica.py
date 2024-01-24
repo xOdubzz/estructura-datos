@@ -13,14 +13,29 @@ class Alumno:
         self.fecha_nacimiento = fecha_nacimiento
         Alumno.alumnos.append(self)
 
-    def mostrar_alumnos(self):
+    def mostrar_alumnos():
         print("Lista de alumnos:")
         for alumno in Alumno.alumnos:
             print(f"Nombre: {alumno.nombre} {alumno.apellido_paterno} {alumno.apellido_materno}")
             print(f"Fecha de Nacimiento: {alumno.fecha_nacimiento}")
             print("------")
 
+    def generador_curp():
 
+        fechacurp = fecha_nacimiento.split("/")
+        fechacurp = "".join(fechacurp)
+        #print(fechacurp)
+
+        inPa = str(apellido_paterno[0])
+        inMa = str(apellido_materno[0])
+        inNo = str(nombre[0])
+        curp = inPa + inMa + inNo + fechacurp
+        curp = curp.upper()
+        
+        i = 0
+
+        for alumno in Alumno.alumnos:
+            print("La CURP del alumno", i + 1, "es: ", curp)
 
 num_alumnos = int(input("Ingrese el número de alumnos: "))
 
@@ -35,5 +50,4 @@ for i in range(num_alumnos):
 
 
 Alumno.mostrar_alumnos()
-
-
+Alumno.generador_curp()
