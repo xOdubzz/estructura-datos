@@ -28,7 +28,8 @@ def funcion():
     
     palindromo(pala, resultado)
     tiempo_de_ejecucion_final = float(time.time() - start_time)
-    print(f"El tiempo de ejecucion de la funcion es de {tiempo_de_ejecucion_final}")
+    
+    print(f"El tiempo de ejecucion de la funcion es de {round(tiempo_de_ejecucion_final, 4)} segundos")
 
 
 print("MENU: ")
