@@ -29,7 +29,7 @@ def bubble_sort(arr):
 
 #lista_desordenada = [3,6,8,10,1,2,1]
 
-numeros_aleatorios = random.sample(range(1, 15001),10000)
+numeros_aleatorios = random.sample(range(1, 15001),100)
 
 print(numeros_aleatorios)
 

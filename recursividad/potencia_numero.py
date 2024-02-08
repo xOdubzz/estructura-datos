@@ -5,5 +5,5 @@ def potencia(base, exponente):
         return base * potencia(base, exponente - 1)
 
 
-resultado = potencia(2,0)
+resultado = potencia(2,2)
 print(resultado)
