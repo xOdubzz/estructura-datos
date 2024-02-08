@@ -23,10 +23,10 @@ def funcion_normal():
 def funcion():
 
     pala = input("Ingresa la palabra para testear si es palindromo o no: ")
-    start_time = time.time()
+    start_time = float(time.time())
     resultado = invertir_palabra(pala)
     
-    test = palindromo(pala, resultado)
+    palindromo(pala, resultado)
     tiempo_de_ejecucion_final = float(time.time() - start_time)
     print(f"El tiempo de ejecucion de la funcion es de {tiempo_de_ejecucion_final}")
 
