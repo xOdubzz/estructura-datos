@@ -14,4 +14,4 @@ def torres_hanoi(n, origen, destino, auxiliar):
 
 
 #ejemplo de uso con 3 discos de A a C usando b como auxiliar     
-torres_hanoi(3, "A", "B", "C")
+torres_hanoi(4, "A", "B", "C")
