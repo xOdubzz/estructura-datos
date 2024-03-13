@@ -329,6 +329,7 @@ class RestauranteApp(tk.Tk):
             total = precio * cantidad
             messagebox.showinfo("Venta Realizada", f"Venta realizada. Total: {total} MXN")
             self.entry_cantidad_venta.delete(0, tk.END)
+            self.pila_ventas.push(seleccion)
         else:
             messagebox.showerror("Error", "Por favor selecciona un producto para realizar la venta.")
     
