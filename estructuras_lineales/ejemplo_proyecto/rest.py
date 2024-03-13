@@ -8,12 +8,12 @@ class NodoListaEnlazada():
         self.dato = dato
         self.siguiente = None
 
+
 class ListaEnlazada():
     def __init__(self):
         self.cabeza = None
 
     def agregar_al_principio(self, dato):
-        
         nuevo_nodo = NodoListaEnlazada(dato)
         nuevo_nodo.siguiente = self.cabeza
         self.cabeza = nuevo_nodo
@@ -29,13 +29,13 @@ class ListaEnlazada():
                 previo.siguiente = actual.siguiente
             else:
                 self.cabeza = actual.siguiente
-    
+
     def mostrar_lista(self):
-        actual = self.cabeza    
+        actual = self.cabeza
         while actual:
             print(actual.dato)
             actual = actual.siguiente
-    
+
     def obtener_lista(self):
         lista = []
         actual = self.cabeza
@@ -44,28 +44,47 @@ class ListaEnlazada():
             actual = actual.siguiente
         return lista
 
-class ColarCircular():
+
+class ColaCircular():
     def __init__(self):
         self.items = []
-    
+
     def esta_vacia(self):
         return self.items == []
-    
+
     def encolar(self, item):
         self.items.insert(0, item)
-    
+
     def desencolar(self):
         if not self.esta_vacia():
             return self.items.pop()
         else:
             return None
-    
+
     def ver_primero(self):
         return self.items[-1]
-    
+
     def avanzar_turno(self):
         if not self.esta_vacia():
             self.items.append(self.items.pop(0))
+
+class HistorialOrdenes:
+    def __init__(self):
+        self.pila_ordenes = []
+
+    def agregar_orden(self, orden):
+        self.pila_ordenes.append(orden)
+
+    def deshacer_ultima_orden(self):
+        if self.pila_ordenes:
+            return self.pila_ordenes.pop()
+        else:
+            return None
+
+class Orden:
+    def __init__(self, plato, cantidad):
+        self.plato = plato
+        self.cantidad = cantidad
 
 class RestauranteApp(tk.Tk):
     def __init__(self):
@@ -95,10 +114,14 @@ class RestauranteApp(tk.Tk):
         # Definir la lista enlazada de empleados
         self.lista_empleados = ListaEnlazada()
 
-        #definir la cola circular de turnos
-        self.cola_turnos = ColarCircular()
+        # Definir la cola circular de turnos
+        self.cola_turnos = ColaCircular()
 
-        # Llamar metodos para definir Pestañas
+        # Definir la pila para el historial de órdenes
+        self.historial_ordenes = HistorialOrdenes()
+
+
+        # Llamar métodos para definir Pestañas
         self.create_empleados_widgets()
         self.create_turnos_widgets()
         self.create_ordenes_widgets()
@@ -107,189 +130,80 @@ class RestauranteApp(tk.Tk):
 
         
 
-    def create_empleados_widgets(self):
 
+    def create_empleados_widgets(self):
         # Pestaña Empleados
-        # Crear un Frame para los widgets de empleados
-        frame_empleados = ttk.LabelFrame(self.tabEmpleados, text="Gestión de Empleados - USANDO LISTAS ENLAZADAS")
+        frame_empleados = ttk.LabelFrame(self.tabEmpleados, text="Gestión de Empleados")
         frame_empleados.pack(padx=10, pady=10, fill="both", expand=True)
 
-        # Etiqueta y entrada para el nombre del empleado
         lbl_nombre = tk.Label(frame_empleados, text="Nombre:")
         lbl_nombre.grid(row=0, column=0, padx=5, pady=5, sticky="e")
         self.entry_nombre = tk.Entry(frame_empleados)
         self.entry_nombre.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        # Botón para agregar un nuevo empleado
         btn_agregar = tk.Button(frame_empleados, text="Agregar Empleado", command=self.agregar_empleado)
         btn_agregar.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
 
-         # Crear un Listbox para mostrar los empleados
         self.listbox_empleados = tk.Listbox(frame_empleados)
         self.listbox_empleados.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
 
-        btn_editar = tk.Button(frame_empleados, text="Editar emppleado", command=self.editar_empleados)
-        btn_editar.grid(row=3, column=0, columnspan=2, padx=5, pady= 5)
-
-        btn_eliminar = tk.Button(frame_empleados, text= "Eliminar empleado", command=self.eliminar_empleado)
-        btn_eliminar.grid(row=3, column=3, columnspan=2, padx=5, pady=5)
-
-
     def agregar_empleado(self):
-        # Obtener el nombre del empleado ingresado en la entrada
         nombre_empleado = self.entry_nombre.get()
-
-        # Verificar si se ingresó un nombre
         if nombre_empleado:
-            # Crear un nuevo nodo con el nombre del empleado
-            #nuevo_empleado = NodoListaEnlazada(nombre_empleado)
-            
-            # Agregar el nuevo empleado a la lista enlazada de empleados
             self.lista_empleados.agregar_al_principio(nombre_empleado.upper())
-            
-            # Actualizar la visualización de la lista de empleados
             self.actualizar_lista_empleados()
-
-
-            # Limpiar la entrada después de agregar el empleado
             self.entry_nombre.delete(0, tk.END)
-
-            self.lista_empleados.mostrar_lista()
-
-            empleados = []
-            empleados.append(self.lista_empleados.mostrar_lista())
-
-            messagebox.showinfo("Infor","Guardado exitosamente")
-
-
+            messagebox.showinfo("Información", "Empleado agregado exitosamente.")
         else:
-            # Mostrar un mensaje de error si no se ingresó un nombre
             messagebox.showerror("Error", "Por favor ingresa el nombre del empleado.")
 
     def actualizar_lista_empleados(self):
-        # Limpiar el contenido actual del Listbox
         self.listbox_empleados.delete(0, tk.END)
-        
-        # Obtener la lista de empleados y agregarlos al Listbox
         empleados = self.lista_empleados.obtener_lista()
         for empleado in empleados:
             self.listbox_empleados.insert(tk.END, empleado)
 
-    def editar_empleados(self):
-        #se necesita obtener el indice del empleado
-        seleccionado = self.listbox_empleados.curselection()
-
-        if seleccionado:
-
-            indice = seleccionado[0]
-
-            #obtener valor del empleado en la lista
-
-            empleado_seleccionado = self.listbox_empleados.get(indice)
-
-            #crear una ventana emergente para editar
-
-            ventana_edicion = tk.Toplevel(self)
-            ventana_edicion.title("Editar empleados")
-            
-            #entrada para sustituir valor
-            lbl_nuevo_valor = tk.Label(ventana_edicion, text = "Nuevo valor: ")
-            lbl_nuevo_valor.grid(row=0, column=0, padx=5, pady= 5)
-
-            entry_nuevo = tk.Entry(ventana_edicion)
-            entry_nuevo.grid(row=0, column=1, padx=5, pady=5)
-
-            #boton para guardar cambios
-
-            btn_confirmar = tk.Button(ventana_edicion, text= "Guardar cambios", command= lambda: self.confirmar_edicion(indice, entry_nuevo.get(), ventana_edicion))
-            btn_confirmar.grid(row=1, column=0, columnspan= 2)
-
-        else:
-            #mostrar mensaje de error sino se selecciono un elemento de la lista
-            messagebox.showerror("ERROR", "Debe seleccionar un empleado")
-
-    def confirmar_edicion(self, indice, nuevo_valor, ventana_edicion):
-            
-        #actualizar el valor seleccionado
-        empleados = self.lista_empleados.obtener_lista()
-        empleados[indice] = nuevo_valor.upper()
-
-        self.lista_empleados = ListaEnlazada()
-        for empleado in empleados:
-            self.lista_empleados.agregar_al_principio(empleado)
-        
-        #actualizar lista de empleados
-        self.actualizar_lista_empleados()
-
-        # una vez realizado este proceso, se debe cerrar la ventana
-
-        ventana_edicion.destroy()
-
-    def eliminar_empleado(self):
-
-        selfeccionado = self.listbox_empleados.curselection()
-
-        if selfeccionado:
-
-            indice = selfeccionado[0]
-            empleado_borrar = self.listbox_empleados.get(indice)
-
-            respuesta = messagebox.askyesno("Confirmar Eliminacion", f"Estas seguro de eliminar este elemento? \n {empleado_borrar}")
-
-            if respuesta:
-                #en este caso se elimina el registro
-                empleados = self.lista_empleados.obtener_lista()
-                del empleados[indice]
-
-            # 
-            
-            self.lista_empleados = ListaEnlazada()
-
-            for empleado in empleados:
-                self.lista_empleados.agregar_al_principio(empleados)
-            
-            self.actualizar_lista_empleados()
-
-            messagebox.showinfo("Info", "Eliminado exitosamente")
-
     def create_turnos_widgets(self):
-        #pestana de turnos
+        # Pestaña Turnos
         frame_turnos = ttk.Frame(self.tabTurnos)
         frame_turnos.pack(fill="both", expand=True)
 
-        lbl_turno = tk.Label(frame_turnos, text= "Turno: ")
-        lbl_turno.grid(row=0, column=1, padx=5, pady=5, sticky="e")
+        lbl_turno = tk.Label(frame_turnos, text="Turno:")
+        lbl_turno.grid(row=0, column=0, padx=5, pady=5, sticky="e")
         self.entry_turno = tk.Entry(frame_turnos)
         self.entry_turno.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        btn_asignar_turno = tk.Button(frame_turnos, text="Asignar Turno", command=self.asignar_turno)
+        btn_asignar_turno = tk.Button(frame_turnos, 
+                                      text="Asignar Turno", 
+                                      command=self.asignar_turno)
         btn_asignar_turno.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
 
-        btn_avanzar_turno = tk.Button(frame_turnos, text="Avanzar turno", command=self.avanzar_turno)
+        btn_avanzar_turno = tk.Button(frame_turnos, text="Avanzar Turno",
+                                       command=self.avanzar_turno)
         btn_avanzar_turno.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
 
         self.listbox_turnos = tk.Listbox(frame_turnos)
-        self.listbox_turnos.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky="nsew")
+        self.listbox_turnos.grid(row=3, column=0, columnspan=2, 
+                                 padx=5, pady=5, sticky="nsew")
 
     def asignar_turno(self):
         turno = self.entry_turno.get()
         if turno:
-            empleado = self.lista_empleados.obtener_lista().pop()
+            empleado = self.lista_empleados.obtener_lista().pop(0)
             self.cola_turnos.encolar((empleado, turno))
             self.actualizar_lista_turnos()
             self.entry_turno.delete(0, tk.END)
-            messagebox.showinfo("Informacion", f"turno {turno} asignado a {empleado}.")
-
+            messagebox.showinfo("Información", 
+                                f"Turno {turno} asignado a {empleado}.")
         else:
-            messagebox.showerror("Error", "Por favor, ingresa el turno.")
-
+            messagebox.showerror("Error", "Por favor ingresa el turno.")
 
     def avanzar_turno(self):
         if not self.cola_turnos.esta_vacia():
-            empleado, turno = self. cola_turnos.desencolar()
+            empleado, turno = self.cola_turnos.desencolar()
             self.cola_turnos.avanzar_turno()
-            self.actuaizar_lista_turnos()
-            messagebox.showinfo("Informacion", f"Avanzado al siguiente turno: {turno}.")
+            self.actualizar_lista_turnos()
+            messagebox.showinfo("Información", f"Avanzado al siguiente turno: {turno}.")
 
     def actualizar_lista_turnos(self):
         self.listbox_turnos.delete(0, tk.END)
@@ -298,15 +212,78 @@ class RestauranteApp(tk.Tk):
             self.listbox_turnos.insert(tk.END, turno)
 
     def create_ordenes_widgets(self):
-        # Aquí crearías los widgets para la pestaña de órdenes
-        pass
+        # Pestaña Órdenes
+        frame_ordenes = ttk.LabelFrame(self.tabOrdenes, text="Realizar Orden")
+        frame_ordenes.pack(padx=10, pady=10, fill="both", expand=True)
+
+        # Etiquetas y entradas para los detalles de la orden
+        lbl_plato = tk.Label(frame_ordenes, text="Plato:")
+        lbl_plato.grid(row=0, column=0, padx=5, pady=5, sticky="e")
+        self.entry_plato = tk.Entry(frame_ordenes)
+        self.entry_plato.grid(row=0, column=1, padx=5, pady=5)
+
+        lbl_cantidad = tk.Label(frame_ordenes, text="Cantidad:")
+        lbl_cantidad.grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        self.entry_cantidad = tk.Entry(frame_ordenes)
+        self.entry_cantidad.grid(row=1, column=1, padx=5, pady=5)
+
+        # Botón para realizar la orden
+        btn_realizar_orden = tk.Button(frame_ordenes, text="Realizar Orden", command=self.realizar_orden)
+        btn_realizar_orden.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
+
+    def realizar_orden(self):
+        plato = self.entry_plato.get()
+        cantidad = self.entry_cantidad.get()
+
+        if plato and cantidad:
+            orden = Orden(plato, cantidad)
+            self.historial_ordenes.agregar_orden(orden)
+            messagebox.showinfo("Orden Realizada", f"Se ha realizado la orden: {cantidad} de {plato}")
+            # Limpiar las entradas después de realizar la orden
+            self.entry_plato.delete(0, tk.END)
+            self.entry_cantidad.delete(0, tk.END)
+            self.actualizar_listbox_historial()
+        else:
+            messagebox.showerror("Error", "Por favor ingresa el plato y la cantidad para realizar la orden.")
 
     def create_historial_widgets(self):
-        # Aquí crearías los widgets para la pestaña de historial
-        pass
+        # Pestaña Historial
+        frame_historial = ttk.LabelFrame(self.tabHistorial, text="Historial Ordenes")
+        frame_historial.pack(padx=10, pady=10, fill="both", expand=True)
+
+
+        # Botón para deshacer la ultima orden
+        btn_deshacer_orden = tk.Button(frame_historial, text="Deshacer Última Orden", command=self.deshacer_ultima_orden)
+        btn_deshacer_orden.pack(padx=5, pady=5)
+
+         # Listbox para mostrar el historial de órdenes
+        self.listbox_historial = tk.Listbox(frame_historial, selectmode="none")
+        self.listbox_historial.pack(padx=5, pady=5)
+        self.actualizar_listbox_historial()
+
+    def deshacer_ultima_orden(self):
+        ultima_orden_deshacer = self.historial_ordenes.deshacer_ultima_orden()
+        if ultima_orden_deshacer:
+            messagebox.showinfo("Orden Deshecha", f"Se ha deshecho la última orden: {ultima_orden_deshacer.cantidad}  {ultima_orden_deshacer.plato}")
+            self.actualizar_listbox_historial()
+        else:
+            messagebox.showinfo("Historial Vacío", "No hay órdenes para deshacer.")
+
+    def actualizar_listbox_historial(self):
+        # Limpiar el Listbox
+        self.listbox_historial.delete(0, tk.END)
+
+        # Obtener la pila de órdenes
+        pila_ordenes = self.historial_ordenes.pila_ordenes
+
+        # Agregar las órdenes al Listbox
+        for orden in reversed(pila_ordenes):
+            self.listbox_historial.insert(0, orden.cantidad+"   "+orden.plato)
+
+
 
     def create_reservas_widgets(self):
-        # Aquí crearías los widgets para la pestaña de reservas
+        # Pestaña Reservas
         pass
 
 

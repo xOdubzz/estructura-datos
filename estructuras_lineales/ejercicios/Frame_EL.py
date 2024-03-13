@@ -16,12 +16,21 @@ class FrameEl(tk.Frame):
         self.texto_actual = tk.Label(self, textvariable = self.texto_var)
         self.texto_actual.pack()
 
-        self.boton_opcion1 = tk.Button(self, text="Opcion 1", command=self.agregar_texto)
+        self.boton_opcion1 = tk.Button(self, text="Opcion 1", command=self.agregar_opcion1)
+        self.boton_opcion1.pack()
+
+        self.boton_opcion1 = tk.Button(self, text="Opcion 2", command=self.agregar_opcion2)
         self.boton_opcion1.pack()
         
     def agregar_opcion1(self):
 
         texto_nuevo = "Opcion 1"
+        self.ordenes.append(texto_nuevo)
+        self.actualizar_orden()
+
+    def agregar_opcion2(self):
+
+        texto_nuevo = "Opcion 2"
         self.ordenes.append(texto_nuevo)
         self.actualizar_orden()
 
@@ -34,4 +43,5 @@ class FrameEl(tk.Frame):
 
 root = tk.Tk()
 editor_frame = FrameEl(master=root)
+editor_frame.pack()
 editor_frame.mainloop()
